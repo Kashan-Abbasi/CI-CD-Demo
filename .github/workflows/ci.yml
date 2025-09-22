@@ -11,19 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    # Go to the repo root where Dockerfile exists
-    - name: Build Docker image
-      run: docker build -t my-nginx-cv $GITHUB_WORKSPACE
+      - name: Build Docker image
+        run: docker build -t my-nginx-cv -f Dockerfile .
 
-    - name: Run container
-      run: docker run -d -p 8080:80 --name cv-app my-nginx-cv
+      - name: Run container
+        run: docker run -d -p 8080:80 --name my-nginx-container my-nginx-cv
 
-    - name: Sleep for 5 seconds
-      run: sleep 5
+      - name: Sleep to wait for container startup
+        run: sleep 5
 
-    - name: Test application response
-      run: curl -s http://localhost:8080 | grep "<html>"
+      - name: Test application response
+        run: curl --fail http://localhost:8080 | grep "html"
 
