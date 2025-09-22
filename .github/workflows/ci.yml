@@ -1,0 +1,33 @@
+name: CI/CD Pipeline for Nginx CV
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-deploy-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout source code
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    # Step 2: Build Docker image
+    - name: Build Docker image
+      run: docker build -t my-nginx-cv .
+
+    # Step 3: Deploy container (run nginx in background)
+    - name: Run container
+      run: docker run -d -p 8080:80 --name cv-app my-nginx-cv
+
+    # Step 4: Wait for Nginx to start
+    - name: Sleep 5s
+      run: sleep 5
+
+    # Step 5: Test if index.html is served
+    - name: Test index.html response
+      run: |
+        curl -s http://localhost:8080 | grep "<html>"
