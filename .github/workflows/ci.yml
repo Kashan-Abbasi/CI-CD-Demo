@@ -14,8 +14,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # Go to the repo root where Dockerfile exists
     - name: Build Docker image
-      run: docker build -t my-nginx-cv .
+      run: docker build -t my-nginx-cv $GITHUB_WORKSPACE
 
     - name: Run container
       run: docker run -d -p 8080:80 --name cv-app my-nginx-cv
